@@ -1,0 +1,335 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f5f7fa;
+  color: #222;
+}
+
+a {
+  color: inherit;
+}
+
+
+/* ================================
+   NAVIGATION
+================================ */
+
+.navbar {
+  background: white;
+
+  padding: 15px 30px;
+
+  border-bottom: 1px solid #ddd;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.brand {
+  font-size: 22px;
+  font-weight: bold;
+
+  color: #2563eb;
+
+  text-decoration: none;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.nav-links a {
+  color: #333;
+  text-decoration: none;
+}
+
+.nav-links a:hover {
+  color: #2563eb;
+}
+
+
+/* ================================
+   CONTAINERS
+================================ */
+
+.container {
+  width: 90%;
+  max-width: 900px;
+
+  margin: 40px auto;
+}
+
+.small {
+  max-width: 500px;
+}
+
+.hero {
+  background: white;
+
+  padding: 40px;
+
+  border-radius: 10px;
+
+  border: 1px solid #ddd;
+}
+
+
+/* ================================
+   FORMS
+================================ */
+
+form {
+  background: white;
+
+  padding: 25px;
+
+  border: 1px solid #ddd;
+
+  border-radius: 8px;
+}
+
+label {
+  display: block;
+
+  margin-top: 15px;
+  margin-bottom: 6px;
+
+  font-weight: bold;
+}
+
+input,
+select {
+  width: 100%;
+
+  padding: 10px;
+
+  border: 1px solid #ccc;
+
+  border-radius: 5px;
+
+  font-size: 15px;
+}
+
+input:focus,
+select:focus {
+  outline: none;
+
+  border-color: #2563eb;
+}
+
+
+/* ================================
+   BUTTONS
+================================ */
+
+button,
+.button {
+  display: inline-block;
+
+  margin-top: 15px;
+
+  padding: 10px 18px;
+
+  border: none;
+
+  border-radius: 5px;
+
+  background: #2563eb;
+
+  color: white;
+
+  text-decoration: none;
+
+  cursor: pointer;
+
+  font-size: 14px;
+}
+
+button:hover,
+.button:hover {
+  opacity: 0.9;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.secondary {
+  background: #64748b;
+}
+
+.secondary-button {
+  background: #64748b;
+}
+
+.danger {
+  background: #dc2626;
+}
+
+.logout-button {
+  background: #dc2626;
+
+  margin-top: 0;
+
+  padding: 7px 12px;
+}
+
+
+/* ================================
+   CARDS
+================================ */
+
+.card {
+  background: white;
+
+  border: 1px solid #ddd;
+
+  border-radius: 8px;
+
+  padding: 20px;
+
+  margin-bottom: 15px;
+}
+
+.card h3 {
+  margin-top: 0;
+}
+
+
+/* ================================
+   MESSAGES
+================================ */
+
+.error {
+  background: #fee2e2;
+
+  color: #991b1b;
+
+  padding: 12px;
+
+  border-radius: 5px;
+
+  margin-bottom: 15px;
+}
+
+.success {
+  background: #dcfce7;
+
+  color: #166534;
+
+  padding: 12px;
+
+  border-radius: 5px;
+
+  margin-bottom: 15px;
+}
+
+.note {
+  color: #666;
+
+  font-size: 14px;
+
+  margin-top: 15px;
+}
+
+
+/* ================================
+   SEARCH
+================================ */
+
+.search-form {
+  display: grid;
+
+  grid-template-columns:
+    1fr auto auto;
+
+  gap: 10px;
+
+  margin-bottom: 25px;
+}
+
+.search-form button {
+  margin-top: 0;
+}
+
+
+/* ================================
+   FILTERS
+================================ */
+
+.filters {
+  display: grid;
+
+  grid-template-columns:
+    200px 220px;
+
+  gap: 15px;
+
+  margin-bottom: 25px;
+}
+
+
+/* ================================
+   GENERAL
+================================ */
+
+.button-group {
+  display: flex;
+
+  flex-wrap: wrap;
+
+  gap: 10px;
+
+  margin-top: 20px;
+}
+
+.back-link {
+  display: inline-block;
+
+  margin-bottom: 20px;
+
+  color: #2563eb;
+
+  text-decoration: none;
+}
+
+
+/* ================================
+   MOBILE
+================================ */
+
+@media (max-width: 700px) {
+
+  .navbar {
+    flex-direction: column;
+
+    align-items: flex-start;
+
+    gap: 12px;
+  }
+
+  .nav-links {
+    flex-wrap: wrap;
+  }
+
+  .search-form {
+    grid-template-columns: 1fr;
+  }
+
+  .filters {
+    grid-template-columns: 1fr;
+  }
+
+  .hero {
+    padding: 25px;
+  }
+
+}
