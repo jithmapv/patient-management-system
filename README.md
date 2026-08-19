@@ -14,6 +14,7 @@ Doctors have a separate login and can manage availability and view their daily o
 * FastAPI
 * SQLAlchemy
 * PostgreSQL
+* Alembic
 * JWT Authentication
 * Pydantic
 * Pytest
@@ -101,11 +102,78 @@ The database constraint acts as the final protection against race conditions.
 
 Cancelled appointments remain stored for history while making their availability slot bookable again.
 
+## Database Migrations
+
+Database schema changes are managed using Alembic.
+
+The migration files are stored under:
+
+```text
+backend/alembic/versions/
+```
+
+Alembic uses the SQLAlchemy model metadata to generate versioned database schema changes.
+
+### Generate a Migration
+
+From the backend directory:
+
+```powershell
+cd backend
+```
+
+Activate the virtual environment:
+
+```powershell
+.\.venv\Scripts\Activate.ps1
+```
+
+Set the local database connection:
+
+```powershell
+$env:DATABASE_URL="postgresql+psycopg2://postgres:YOUR_PASSWORD@localhost:5432/patient_management"
+```
+
+Generate a migration after changing SQLAlchemy models:
+
+```powershell
+python -m alembic revision --autogenerate -m "describe schema change"
+```
+
+### Apply Migrations
+
+Run:
+
+```powershell
+python -m alembic upgrade head
+```
+
+### Check Current Migration
+
+```powershell
+python -m alembic current
+```
+
+### View Migration History
+
+```powershell
+python -m alembic history
+```
+
+Alembic migrations are used as the primary schema-management mechanism instead of relying only on SQLAlchemy `Base.metadata.create_all()`.
+
 ## Project Structure
 
 ```text
 patient-management-system/
 ├── backend/
+│   ├── alembic/
+│   │   ├── versions/
+│   │   │   └── *_initial_schema.py
+│   │   ├── env.py
+│   │   ├── README
+│   │   └── script.py.mako
+│   ├── alembic.ini
 │   ├── app/
 │   │   ├── routers/
 │   │   ├── main.py
@@ -155,6 +223,8 @@ Alternatively:
 ```powershell
 docker compose up --build -d
 ```
+
+The backend container applies the latest Alembic migrations before starting the FastAPI server.
 
 Open:
 
@@ -214,7 +284,7 @@ Activate it:
 Install dependencies:
 
 ```powershell
-pip install -r requirements.txt
+python -m pip install -r requirements.txt
 ```
 
 Configure environment variables:
@@ -224,6 +294,12 @@ DATABASE_URL=postgresql+psycopg2://postgres:YOUR_PASSWORD@localhost:5432/patient
 SECRET_KEY=YOUR_SECRET_KEY
 ALGORITHM=HS256
 ACCESS_TOKEN_EXPIRE_MINUTES=60
+```
+
+Apply database migrations:
+
+```powershell
+python -m alembic upgrade head
 ```
 
 Run the backend:
@@ -363,6 +439,14 @@ PostgreSQL was selected because appointment booking requires reliable database c
 
 SQLAlchemy provides the persistence layer and keeps database operations separated from application schemas.
 
+### Alembic Decision
+
+Alembic is used for version-controlled database migrations.
+
+Schema changes can be generated from SQLAlchemy models and applied consistently across local development and Docker environments.
+
+This provides a reproducible database schema and avoids depending only on automatic table creation at application startup.
+
 ### JWT Authentication Decision
 
 JWT provides a simple stateless authentication mechanism suitable for this time-boxed application.
@@ -391,15 +475,14 @@ The frontend stores the JWT in `localStorage` for simplicity.
 
 A production system should evaluate HTTP-only secure cookies, refresh token rotation, expiration handling, and token revocation.
 
-Database tables are currently initialized using SQLAlchemy metadata.
+Database schema changes are managed through Alembic migrations.
 
-A production application should use managed database migrations such as Alembic.
+For this technical exercise, migrations are intentionally kept simple and focused on the current application schema.
 
 ## What I Would Do With More Time
 
 With more time I would add:
 
-* Alembic database migrations
 * Administrator functionality
 * Secure HTTP-only cookie authentication
 * Refresh tokens
@@ -418,6 +501,7 @@ With more time I would add:
 * Monitoring
 * Production secret management
 * Cloud deployment
+* More advanced migration rollback and deployment validation
 
 ## Security
 
