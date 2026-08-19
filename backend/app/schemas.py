@@ -6,6 +6,8 @@ from pydantic import (
     ConfigDict,
     EmailStr,
     Field,
+    field_validator,
+    model_validator,
 )
 
 
@@ -22,9 +24,21 @@ class PatientRegister(BaseModel):
     email: EmailStr
 
     password: str = Field(
-        min_length=6,
+        min_length=8,
         max_length=128,
     )
+
+    @field_validator("full_name")
+    @classmethod
+    def validate_full_name(cls, value: str):
+        value = value.strip()
+
+        if not value:
+            raise ValueError(
+                "Full name cannot be empty"
+            )
+
+        return value
 
 
 class PatientResponse(BaseModel):
@@ -50,7 +64,7 @@ class DoctorRegister(BaseModel):
     email: EmailStr
 
     password: str = Field(
-        min_length=6,
+        min_length=8,
         max_length=128,
     )
 
@@ -58,6 +72,24 @@ class DoctorRegister(BaseModel):
         min_length=2,
         max_length=120,
     )
+
+    @field_validator(
+        "full_name",
+        "specialty"
+    )
+    @classmethod
+    def validate_text_fields(
+        cls,
+        value: str
+    ):
+        value = value.strip()
+
+        if not value:
+            raise ValueError(
+                "Value cannot be empty"
+            )
+
+        return value
 
 
 class DoctorResponse(BaseModel):
@@ -72,16 +104,21 @@ class DoctorResponse(BaseModel):
 
 
 # =========================================================
-# Login / Authentication
+# Authentication Schemas
 # =========================================================
 
 class LoginRequest(BaseModel):
     email: EmailStr
-    password: str
+
+    password: str = Field(
+        min_length=1,
+        max_length=128,
+    )
 
 
 class TokenResponse(BaseModel):
     access_token: str
+
     token_type: str = "bearer"
 
     role: Literal[
@@ -91,12 +128,34 @@ class TokenResponse(BaseModel):
 
 
 # =========================================================
-# Doctor Availability
+# Doctor Availability Schemas
 # =========================================================
 
 class AvailabilityCreate(BaseModel):
     start_time: datetime
     end_time: datetime
+
+    @model_validator(mode="after")
+    def validate_availability(self):
+
+        # Require timezone-aware datetime
+        if self.start_time.tzinfo is None:
+            raise ValueError(
+                "start_time must include timezone information"
+            )
+
+        if self.end_time.tzinfo is None:
+            raise ValueError(
+                "end_time must include timezone information"
+            )
+
+        # End must be later than start
+        if self.end_time <= self.start_time:
+            raise ValueError(
+                "end_time must be after start_time"
+            )
+
+        return self
 
 
 class AvailabilityResponse(BaseModel):
@@ -111,12 +170,17 @@ class AvailabilityResponse(BaseModel):
 
 
 # =========================================================
-# Appointment
+# Appointment Schemas
 # =========================================================
 
 class AppointmentCreate(BaseModel):
-    doctor_id: int
-    slot_id: int
+    doctor_id: int = Field(
+        gt=0
+    )
+
+    slot_id: int = Field(
+        gt=0
+    )
 
 
 class AppointmentResponse(BaseModel):
