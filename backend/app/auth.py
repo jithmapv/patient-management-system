@@ -3,7 +3,7 @@ from datetime import datetime, timedelta, timezone
 
 from dotenv import load_dotenv
 from jose import JWTError, jwt
-from passlib.context import CryptContext
+from pwdlib import PasswordHash
 
 
 load_dotenv()
@@ -27,54 +27,35 @@ ACCESS_TOKEN_EXPIRE_MINUTES = int(
 )
 
 
-# Password hashing configuration
-pwd_context = CryptContext(
-    schemes=["bcrypt"],
-    deprecated="auto"
-)
-
-
 # =========================================================
-# Password Functions
+# Password Hashing
 # =========================================================
+
+password_hash = PasswordHash.recommended()
+
 
 def hash_password(password: str) -> str:
-    """
-    Convert plain password into a secure bcrypt hash.
-    """
-
-    return pwd_context.hash(password)
+    return password_hash.hash(password)
 
 
 def verify_password(
     plain_password: str,
     hashed_password: str
 ) -> bool:
-    """
-    Compare plain password with stored password hash.
-    """
-
-    return pwd_context.verify(
+    return password_hash.verify(
         plain_password,
         hashed_password
     )
 
 
 # =========================================================
-# JWT Token Functions
+# JWT
 # =========================================================
 
 def create_access_token(
     user_id: int,
     role: str
 ) -> str:
-    """
-    Create JWT access token.
-
-    role:
-        patient
-        doctor
-    """
 
     expire = (
         datetime.now(timezone.utc)
@@ -89,30 +70,21 @@ def create_access_token(
         "exp": expire,
     }
 
-    token = jwt.encode(
+    return jwt.encode(
         payload,
         SECRET_KEY,
         algorithm=ALGORITHM
     )
 
-    return token
 
-
-def decode_access_token(
-    token: str
-) -> dict:
-    """
-    Decode and validate JWT token.
-    """
+def decode_access_token(token: str) -> dict:
 
     try:
-        payload = jwt.decode(
+        return jwt.decode(
             token,
             SECRET_KEY,
             algorithms=[ALGORITHM]
         )
-
-        return payload
 
     except JWTError as exc:
         raise ValueError(
