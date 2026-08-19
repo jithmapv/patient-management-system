@@ -5,18 +5,14 @@ from app.database import Base, engine
 from app.routers import auth, doctors, appointments
 
 
-# Create database tables automatically.
 Base.metadata.create_all(bind=engine)
 
-
 app = FastAPI(
-    title="Patient Management System API",
-    description="Clinic appointment booking backend using FastAPI and PostgreSQL",
+    title="Patient Management System",
     version="1.0.0",
 )
 
 
-# Allow React frontend running with Vite
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
@@ -29,7 +25,6 @@ app.add_middleware(
 )
 
 
-# Register routers
 app.include_router(auth.router)
 app.include_router(doctors.router)
 app.include_router(appointments.router)
@@ -38,13 +33,12 @@ app.include_router(appointments.router)
 @app.get("/")
 def root():
     return {
-        "message": "Patient Management System API is running",
-        "docs": "/docs",
+        "message": "Patient Management System API"
     }
 
 
 @app.get("/health")
-def health_check():
+def health():
     return {
         "status": "healthy"
     }
