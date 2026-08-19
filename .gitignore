@@ -1,8 +1,25 @@
-venv/ 
-__pycache__/ 
-*.pyc 
-.env 
-.vscode/ 
-.idea/ 
-.pytest_cache/ 
-*.log 
+# Environment variables
+.env
+*.env
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# React
+frontend/node_modules/
+frontend/dist/
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
